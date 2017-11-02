@@ -100,9 +100,11 @@ class homebrew(
     "${brewsdir}/cmd/boxen-bottle-hooks.rb":
       source  => 'puppet:///modules/homebrew/boxen-bottle-hooks.rb' ;
     "${brewsdir}/cmd/brew-boxen-latest.rb":
-      source  => 'puppet:///modules/homebrew/brew-boxen-latest.rb' ;
+      source  => 'puppet:///modules/homebrew/brew-boxen-latest.rb',
+      mode    => 'ug+x';
     "${brewsdir}/cmd/brew-boxen-install.rb":
-      source  => 'puppet:///modules/homebrew/brew-boxen-install.rb' ;
+      source  => 'puppet:///modules/homebrew/brew-boxen-install.rb',
+      mode    => 'ug+x';
   }
 
   ->
