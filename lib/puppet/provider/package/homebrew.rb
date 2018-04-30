@@ -75,12 +75,17 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
         # instead let's `brew unlink` and then we're allowed to `brew install`
         # whatever version we want.
         execute [ "brew", "unlink", @resource[:name] ], command_opts
-      end
-
-      if install_options.any?
-        execute [ "brew", "install", @resource[:name], *install_options ].flatten, command_opts
+        if install_options.any?
+          execute [ "brew", "upgrade", @resource[:name], *install_options ].flatten, command_opts
+        else
+          execute [ "brew", "upgrade", @resource[:name] ].flatten, command_opts
+        end
       else
-        execute [ "brew", "install", @resource[:name] ].flatten, command_opts
+        if install_options.any?
+          execute [ "brew", "install", @resource[:name], *install_options ].flatten, command_opts
+        else
+          execute [ "brew", "install", @resource[:name] ].flatten, command_opts
+        end
       end
     end
   end
@@ -106,7 +111,12 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
   end
 
   def latest
-    execute([ "brew", "ls", "--versions", @resource[:name] ], command_opts.merge({ :failonfail => false })).split.last
+    result = JSON.parse(execute([ "brew", "info", "--json=v1", @resource[:name] ], command_opts.merge({ :failonfail => false })))
+    if result[0]["revision"] == 0
+      result[0]["versions"]["stable"]
+    else
+      [result[0]["versions"]["stable"], result[0]["revision"]].join("_")
+    end
   end
 
   def query
