@@ -13,7 +13,7 @@ class homebrew::config {
   $libdir        = "${installdir}/lib"
 
   $cmddir        = "${repositorydir}/Library/Homebrew/cmd"
-  $tapsdir       = "${repositorydir}/Library/Taps"
+  $tapsdir       = "${installdir}/Library/Taps"
 
   $brewsdir      = "${tapsdir}/boxen/homebrew-brews"
 
